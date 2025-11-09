@@ -5,13 +5,13 @@ import numpy as np
 import math
 import io
 
-class QRCoder(): # {
+class QRCoder():
     def __init__(self):
         # default value for number of code lines per each SVG file.
         self.line_max = 50
     
     # @classmethod --> what's the heck is this in bloody Python???
-    def Encode(self, fileName):
+    def encode(self, fileName):
         f = io.open(fileName, mode="r", encoding="utf-8")
         fileText = f.readlines()
         line_count = len(fileText)
@@ -29,12 +29,11 @@ class QRCoder(): # {
                 img = qrcode.make("".join(chunk), image_factory=svg.SvgImage)
                 img.save("{0}.svg".format(fileName))
 
-    def Decode(self, filname):
-        raise Exception("This method isn't yet implemented")
-# }.QRCoder
+    def decode(self, filname):
+        raise Exception("This method hasn't been implemented yet")
 
 qr = QRCoder()
-qr.Encode("PyGame.py")
-# qr.Decode("ScreenTime.cs")
+qr.encode("readme.md")
+# qr.decode("readme.svg")
 
 print("All done")
