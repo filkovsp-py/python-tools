@@ -1,39 +1,39 @@
 import io
 import qrcode
-import qrcode.image.svg as svg
 import numpy as np
 import math
-import io
+
+from qrcode.image.svg import SvgImage
 
 class QRCoder():
-    def __init__(self):
-        # default value for number of code lines per each SVG file.
-        self.line_max = 50
     
-    # @classmethod --> what's the heck is this in bloody Python???
-    def encode(self, fileName):
-        f = io.open(fileName, mode="r", encoding="utf-8")
-        fileText = f.readlines()
-        line_count = len(fileText)
+    line_max = 50
+    
+    @classmethod
+    def encode(cls, file_name:str) -> None:
+        f = io.open(file_name, mode="r", encoding="utf-8")
+        file_text:list[str] = f.readlines()
+        line_count:int = len(file_text)
         
-        # number of code chunks (SVG files)
-        chunks = np.array_split(fileText, math.ceil(line_count/self.line_max))
+        chunks:list = np.array_split(file_text, math.ceil(line_count / cls.line_max))
 
-        i=0
-        for chunk in chunks:
-            if len(chunks) > 1:
-                img = qrcode.make("".join(chunk), image_factory=svg.SvgImage)
-                img.save("{0}.{1}.svg".format(fileName,i))
-                i+=1
-            else:
-                img = qrcode.make("".join(chunk), image_factory=svg.SvgImage)
-                img.save("{0}.svg".format(fileName))
+        if len(chunks) == 0:
+            raise Exception("Nothing to encode!")
 
-    def decode(self, filname):
+        elif len(chunks) == 1:
+            img:SvgImage = qrcode.make("".join(chunks[0]), image_factory=SvgImage)
+            img.save(f"{file_name}.svg")
+
+        else:
+            for i in range(len(chunks)):
+                img:SvgImage = qrcode.make("".join(chunks[i]), image_factory=SvgImage)
+                img.save(f"{file_name}.{i}.svg")
+
+    @classmethod
+    def decode(cls, file_name:str) -> None:
         raise Exception("This method hasn't been implemented yet")
 
-qr = QRCoder()
-qr.encode("readme.md")
-# qr.decode("readme.svg")
+QRCoder.encode("readme.md")
+# QRCoder.decode("readme.svg")
 
 print("All done")
